@@ -17,6 +17,7 @@ const btnAgregar = document.querySelector('.add-comment-btn')
 const input = document.querySelector('.comment-input')
 
 let comentarios = []
+let dioClick = true
 
 // comentarios
 const comentario = document.querySelector('.comments-container')
@@ -45,32 +46,55 @@ function obtenerLikes(){
 
 // Click en me gusta 
 btnLike.addEventListener('click', e => {
-    contadorLikes.textContent = aumentarLikes()
+    if(dioClick){
+        btnLike.textContent = 'No me gusta'
+        contadorLikes.textContent = aumentarLikes()
+        console.log('activo');
+        dioClick = false
+    }else{
+        btnLike.textContent = 'Me gusta'
+        contadorLikes.textContent = reducirLikes()
+        dioClick = true
+        console.log('no activo');
+    }
 })
 
 // Click en no me gusta
-btnDislike.addEventListener('click', e => {
-    contadorLikes.textContent = reducirLikes()
-})
+// btnDislike.addEventListener('click', e => {
+//     contadorLikes.textContent = reducirLikes()
+// })
+
+// Podia haber dejado el btnDislike porque funcionaba, pero como el ejercicio decia que tenia que 
+// cambiar el texto del boton me gusta mejor quite este boton y le aplique la misma logica de la imagen
 
 // Doble click en la imagen
 imagen.addEventListener('dblclick', e => {
-    contadorLikes.textContent = aumentarLikes()
+    if(dioClick){
+        btnLike.textContent = 'No me gusta'
+        contadorLikes.textContent = aumentarLikes()
+        console.log('activo');
+        dioClick = false
+    }else{
+        btnLike.textContent = 'Me gusta'
+        contadorLikes.textContent = reducirLikes()
+        dioClick = true
+        console.log('no activo');
+    }
 })
 
 // Agregar comentarios
 btnAgregar.addEventListener('click', e => {
     e.preventDefault()
     const contenido = input.value
-
+  
     if(contenido.trim() !== ''){
-        comentarios.push(contenido)
+      comentarios.push(contenido)
+      localStorage.setItem('comentarios', JSON.stringify(comentarios));
     }
-
+  
     comentario.innerHTML = comentarios
-    console.log(comentarios);
     limpiar()
-})
+  })
 
 
 function limpiar(){
@@ -80,7 +104,12 @@ function limpiar(){
 // Local storage
 window.addEventListener('load', () => {
     const cantidadLikes = localStorage.getItem('ultimoLike')
+    const comentariosGuardar = localStorage.getItem('comentario')
     if (cantidadLikes) {
         ultimoLike = JSON.parse(cantidadLikes);
+        contadorLikes.innerHTML = ultimoLike
+
+        comentarios = JSON.parse(comentariosGuardar)
+        comentario.innerHTML = comentarios
     }
 });
